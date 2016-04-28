@@ -15,17 +15,39 @@ gmaps = {
     addMarker: function(marker) {
       /**Can edit this line depending on if DB has lat long or we need
       to calculate it here**/
+      if (marker.tag == "Restaurant"){
+        iconLink = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+      }
+      if(marker.tag == "Farm"){
+        iconLink = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+      }
+        if(marker.tag != "Restaurant" && marker.tag != "Farm") {
+          iconLink = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+        }
         var gLatLng = new google.maps.LatLng(marker.lat, marker.lng);
         var gMarker = new google.maps.Marker({
             position: gLatLng,
             map: this.map,
             title: marker.title,
-            // animation: google.maps.Animation.DROP,
-            icon:'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+            icon: iconLink
+
+
         });
         this.latLngs.push(gLatLng);
         this.markers.push(gMarker);
         this.markerData.push(marker);
+
+        var contentString = marker.description
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+
+        gMarker.addListener('click', function() {
+          //this.map.setZoom(8);
+          //this.map.setCenter(gMarker.getPosition());
+          infowindow.open(this.map, gMarker);
+
+          });
         return gMarker;
     },
 
@@ -52,7 +74,7 @@ gmaps = {
         console.log("[+] Intializing Google Maps...");
         var mapOptions = {
             zoom: 12,
-            center: new google.maps.LatLng(53.565, 10.001),
+            center: new google.maps.LatLng(42.114525, -88.036537),
             mapTypeId: google.maps.MapTypeId.HYBRID
         };
 
@@ -62,6 +84,6 @@ gmaps = {
         );
 
         // global flag saying we intialized already
-        Session.set('map', true);
+        Session.set("maps", true);
     }
 }
